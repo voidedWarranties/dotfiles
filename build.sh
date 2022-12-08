@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nix build .#homeConfigurations.ksk.activationPackage
+nix build .?submodules=1#homeConfigurations.ksk.activationPackage
