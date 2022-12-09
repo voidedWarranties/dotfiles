@@ -1,6 +1,13 @@
 { pkgs, ... }:
 
-{
+let
+  jovial = builtins.fetchGit {
+    name = "jovial";
+    url = "https://github.com/zthxxx/jovial.git";
+    ref = "master";
+    rev = "45fc6a07b834cd564013f09ed0fa27349c4c4bee";
+  };
+in {
    programs.zsh = {
      enable = true;
      oh-my-zsh = {
@@ -38,6 +45,6 @@
   };
 
   home.file = {
-    ".oh-my-zsh/custom/themes/jovial.zsh-theme".source = ./files/jovial/jovial.zsh-theme;
+    ".oh-my-zsh/custom/themes/jovial.zsh-theme".source = jovial + "/jovial.zsh-theme";
   };
 }
