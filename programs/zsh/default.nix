@@ -41,6 +41,8 @@ in {
      initExtra = ''
        JOVIAL_SYMBOL[arrow]=" ･ω･*)ﾉ"
        JOVIAL_SYMBOL[arrow.git-clean]=" ･ω･*)ﾉ" # for emacs vterm (default breaks)
+
+       . $HOME/.nix-profile/etc/profile.d/nix.sh
      '';
   };
 
