@@ -10,5 +10,6 @@
 
   imports = [
     ./programs
+    ./fonts.nix
   ];
 }

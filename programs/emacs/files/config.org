@@ -1,0 +1,549 @@
+#+title: Emacs Configuration
+
+* usage
+
+Run =touch config.el= and =touch config.org= for this file to be tangled automatically.
+Both files must exist and this file must be newer than =config.el=.
+
+* basic emacs options
+
+** startup
+
+#+begin_src emacs-lisp
+  (setq inhibit-startup-message t
+	inhibit-startup-echo-area-message t
+	initial-scratch-message ""
+	server-client-instructions nil
+	warning-minimum-level :emergency)
+#+end_src
+
+** custom
+
+#+begin_src emacs-lisp
+  (setq custom-file "~/.emacs.d/custom.el") ; instead of init.el
+#+end_src
+
+** window behavior/layout
+
+#+begin_src emacs-lisp
+  ;; from rougier
+  (require 'frame)
+  (setq default-frame-alist '((menu-bar-lines . 0)
+			      (tool-bar-lines . 0)
+			      (vertical-scroll-bars . nil)
+			      (internal-border-width . 24)
+			      (left-fringe . 0)
+			      (right-fringe . 0)))
+
+  (setq initial-frame-alist default-frame-alist)
+
+  (tooltip-mode -1)
+#+end_src
+
+** line numbers
+
+#+begin_src emacs-lisp
+  (setq display-line-numbers-type 'relative)
+  (global-display-line-numbers-mode)
+#+end_src
+
+** fonts
+
+#+begin_src emacs-lisp
+  (set-face-attribute 'fixed-pitch nil :font "Jetbrains Mono" :height 100)
+  (set-face-attribute 'default nil :inherit 'fixed-pitch)
+#+end_src
+
+** trailing whitespace
+
+#+begin_src emacs-lisp
+  (add-hook 'before-save-hook
+	    'delete-trailing-whitespace)
+#+end_src
+
+** misc
+
+#+begin_src emacs-lisp
+  (electric-pair-mode 1)
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  (setq make-backup-files nil)
+  (server-start)
+#+end_src
+
+* packages
+
+** setup
+
+*** archives
+
+Adding archives and refreshing contents.
+
+#+begin_src emacs-lisp
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+  (setq package-archive-priorities '(("melpa" . 20)))
+  (unless package-archive-contents
+    (package-refresh-contents))
+#+end_src
+
+*** use-package
+
+#+begin_src emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+#+end_src
+
+** org
+
+#+begin_src emacs-lisp
+  (defun etc/org-setup ()
+    (setq org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S.%N>")) ; hacky!
+    (setq electric-pair-inhibit-predicate (lambda (c) (char-equal c ?<)))
+    (display-line-numbers-mode -1)
+
+    (dolist (face '((org-level-1 . 1.5)
+		    (org-level-2 . 1.3)
+		    (org-level-3 . 1.1)
+		    (org-level-4 . 1.05)
+		    (org-level-5 . 1.0)
+		    (org-level-6 . 1.0)
+		    (org-level-7 . 1.0)
+		    (org-level-8 . 1.0)))
+      (set-face-attribute (car face) nil :font "Jetbrains Mono" :weight 'bold :height (cdr face)))
+
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-formula nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+    (etc/book-mode-headers-bullets))
+
+  ;; from SystemCrafted
+  (defun etc/org-roam-filter-by-tag (tag-name)
+    (lambda (node)
+      (and (member tag-name (org-roam-node-tags node))
+	   (not (member "archived" (org-roam-node-tags node))))))
+
+  (defun etc/org-roam-list-notes-by-tag (tag-name)
+    (mapcar #'org-roam-node-file
+	    (seq-filter
+	     (etc/org-roam-filter-by-tag tag-name)
+	     (org-roam-node-list))))
+
+  (defun etc/org-roam-refresh-agenda-list ()
+    (interactive)
+    (setq org-agenda-files (etc/org-roam-list-notes-by-tag "todo")))
+
+  (use-package org
+    :hook (org-mode . etc/org-setup)
+    :custom
+    (org-startup-folded 'overview)
+    :config
+    (setq org-fontify-whole-heading-line t
+	  org-fontify-done-headline t
+	  org-fontify-quote-and-verse-blocks t)
+
+    (setq org-ellipsis " ▾")
+
+    ;;(setq org-hide-emphasis-markers t)
+    (setq org-log-done 'time)
+    (setq org-src-preserve-indentation nil)
+    (setq org-startup-with-latex-preview t)
+    (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
+
+    (require 'org-tempo)
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp")))
+#+end_src
+
+*** [[https://github.com/rougier/book-mode][book-mode]]-style headers and bullets
+
+#+begin_src emacs-lisp
+  (defun etc/mk-bullet-face (regex use-left-margin bullet-text)
+    `(,regex
+      1 '(face fixed-pitch display ((margin ,(if use-left-margin 'left-margin nil))
+				    ,(propertize bullet-text
+						 'face '(:inherit fixed-pitch)) append))))
+
+  (defun etc/mk-header-face (level margin-format replacement)
+    `(,(format "^\\(\\*\\{%d\\} \\)\\(.*\\)$" level)
+      1 '(face fixed-pitch display ((margin left-margin)
+				    ,(propertize (format margin-format replacement)
+						 'face '(:inherit fixed-pitch)) append))
+      2 '(face bold append)))
+
+  (defun etc/book-mode-headers-bullets ()
+    (let ((left-margin 12)
+	  (right-margin 12))
+      (setq left-margin-width left-margin
+	    right-margin-width right-margin)
+
+      (set-window-buffer nil (current-buffer))
+
+      (add-to-list 'font-lock-extra-managed-props 'display)
+
+      ;; from https://github.com/rougier/book-mode/blob/master/book-mode.el
+      (let ((margin-format (format "%%%ds" left-margin))
+	    (hyphen-bullet "⎯ ")
+	    (plus-bullet "➤ ")
+	    (asterisk-bullet "• "))
+	(font-lock-add-keywords nil `(
+				      ;; hyphen bullet
+				      ,(etc/mk-bullet-face "^\\(\\- \\)\\(.*\\)$" t (format margin-format hyphen-bullet))
+				      ,(etc/mk-bullet-face "^[ ]+\\(\\- \\)\\(.*\\)$" nil hyphen-bullet)
+
+				      ;; plus bullet
+				      ,(etc/mk-bullet-face "^\\(\\+ \\)\\(.*\\)$" t (format margin-format plus-bullet))
+				      ,(etc/mk-bullet-face "^[ ]+\\(\\+ \\)\\(.*\\)$" nil plus-bullet)
+
+				      ;; asterisk bullet
+				      ,(etc/mk-bullet-face "^\\( \\* \\)\\(.*\\)$" t (format margin-format asterisk-bullet))
+				      ,(etc/mk-bullet-face "^[ ]+\\(\\* \\)\\(.*\\)$" nil asterisk-bullet)
+
+				      ;; headlines
+				      ,(etc/mk-header-face 1 margin-format "# ")
+				      ,(etc/mk-header-face 2 margin-format "## ")
+				      ,(etc/mk-header-face 3 margin-format "### ")
+				      ,(etc/mk-header-face 4 margin-format "#### "))))
+      (font-lock-fontify-buffer)))
+#+end_src
+
+*** org-roam
+
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :custom
+    (org-roam-directory (file-truename "~/roam-notes"))
+    (org-roam-dailies-directory "journals/")
+    (org-roam-dailies-capture-templates '(("d" "default" entry "* %?" :target
+				   (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: :journal:todo:\n"))))
+    :config
+    (add-to-list 'org-roam-capture-templates '("r" "draft" plain "%?"
+					       :target (file+head "staging/%<%Y%m%d%H%M%S>-${slug}.org"
+								  "#+title: ${title}\n#+filetags: :staging:\n")
+					       :unnarrowed t))
+
+    (add-to-list 'org-roam-capture-templates '("n" "notes" plain "%?"
+					       :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org"
+								  "#+title: ${title}\n#+filetags: :notes:\n")
+					       :unnarrowed t))
+
+    (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:30}" 'face 'org-tag)))
+    (org-roam-db-autosync-mode)
+
+    (etc/org-roam-refresh-agenda-list))
+#+end_src
+
+**** org-roam-ui
+
+#+begin_src emacs-lisp
+  (use-package org-roam-ui
+    :after org-roam)
+#+end_src
+
+*** org-wc
+
+#+begin_src emacs-lisp
+  (use-package org-wc)
+#+end_src
+
+*** evil-org
+
+#+begin_src emacs-lisp
+  (use-package evil-org
+    :after evil-collection
+    :config
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys))
+#+end_src
+
+*** org-fragtog
+
+Automatic toggling of LaTeX fragments in org-mode
+
+#+begin_src emacs-lisp
+  (use-package org-fragtog
+    :hook (org-mode . org-fragtog-mode))
+#+end_src
+
+*** org-transclusion
+
+#+begin_src emacs-lisp
+  (use-package org-transclusion)
+#+end_src
+
+** doom-themes
+
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :config
+    (setq doom-themes-enable-bold t
+	  doom-themes-enable-italic t)
+    (load-theme 'doom-molokai t)
+    (doom-themes-org-config))
+#+end_src
+
+** evil mode
+
+#+begin_src emacs-lisp
+  (use-package evil
+    :init
+    (setq evil-undo-system 'undo-redo)
+    (setq evil-want-integration t
+	  evil-want-keybinding nil)
+    :config
+    (evil-mode 1))
+#+end_src
+
+*** evil-collection
+
+Provides keybindings for some special modes.
+
+#+begin_src emacs-lisp
+  (use-package evil-collection
+    :after evil
+    :custom (evil-collection-setup-minibuffer t)
+    :config
+    (evil-collection-init))
+#+end_src
+
+** nano-modeline
+
+#+begin_src emacs-lisp
+  (use-package nano-modeline
+    :init
+    (nano-modeline-mode 1))
+#+end_src
+
+** which-key
+
+Gives hints for keybinds.
+
+#+begin_src emacs-lisp
+  (use-package which-key
+    :init
+    (setq which-key-idle-delay 0.3)
+    (which-key-mode))
+#+end_src
+
+** helpful
+
+Provides better help pages.
+
+#+begin_src emacs-lisp
+  (use-package helpful
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+    :bind
+    ([remap describe-function] . counsel-describe-function)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-variable] . counsel-describe-variable)
+    ([remap describe-key] . helpful-key))
+#+end_src
+
+** general
+
+Easier key bindings.
+
+#+begin_src emacs-lisp
+  (use-package general
+    :config
+    (general-create-definer etc/leader-def
+      :keymaps 'override
+      :prefix "SPC"
+      :global-prefix "C-SPC")
+
+    ;; TODO: machine specific configuration
+    ;; (etc/leader-def
+    ;;   :keymaps 'normal
+    ;;   "a" '(:ignore t :which-key "applications")
+    ;;   "as" 'emms)
+
+    (etc/leader-def
+      :keymaps 'normal
+      "m" '(:ignore t :wk "mode")
+      "ms" 'svg-tag-mode)
+
+    (etc/leader-def
+      :keymaps 'normal
+      "d" '(:ignore t :wk "describe")
+      "dk" '(helpful-key :wk "key")
+      "dc" '(helpful-command :wk "command")
+      "df" '(counsel-describe-function :wk "function")
+      "dv" '(counsel-describe-variable :wk "variable"))
+
+    (etc/leader-def
+      :keymaps 'normal
+      "b" '(:ignore t :wk "buffer")
+      "bs" '(counsel-switch-buffer :wk "switch")
+      "bk" '(kill-buffer :wk "kill"))
+
+    (etc/leader-def
+      :keymaps '(normal insert)
+      "o" '(:ignore t :wk "org")
+      "oa" '(org-agenda :wk "agenda")
+
+      "od" '(org-deadline :wk "deadline")
+      "os" '(org-schedule :wk "schedule")
+
+      "oE" '(org-export-dispatch :wk "export")
+      "oS" '(org-save-all-org-buffers :wk "save")
+
+      "oc" '(:ignore t :wk "clock")
+      "oci" '(org-clock-in :wk "in")
+      "oco" '(org-clock-out :wk "out")
+      "occ" '(org-clock-cancel :wk "cancel")
+
+      "oi" '(:ignore t :wk "timestamp")
+      "oia" '(org-time-stamp :wk "active")
+      "oii" '(org-time-stamp-inactive :wk "inactive")
+
+      "oo" '(org-open-at-point :wk "open")
+      "ot" '(org-todo :wk "todo")
+      "owc" '(org-word-count :wk "word count"))
+
+    (etc/leader-def
+      :keymaps '(normal insert)
+      "n" '(:ignore t :wk "org-roam")
+
+      "nf" '(org-roam-node-find :wk "node find")
+      "ni" '(org-roam-node-insert :wk "node insert")
+
+      "nj" '(org-roam-dailies-capture-today :wk "journal")
+      "nr" '(etc/org-roam-refresh-agenda-list :wk "refresh agenda")
+      "nl" '(org-roam-buffer-toggle :wk "toggle buffer")
+
+      "nu" '(:ignore t :wk "ui")
+      "nuo" '(org-roam-ui-open :wk "open")
+      "num" '(org-roam-ui-mode :wk "mode")))
+#+end_src
+
+** ivy, counsel, swiper
+
+#+begin_src emacs-lisp
+  (use-package swiper
+    :bind (("C-s" . swiper)))
+
+  (use-package ivy
+    :bind (:map ivy-minibuffer-map ("S-SPC" . nil))
+    :config
+    (setq ivy--regex-function 'ivy--regex-fuzzy)
+    (ivy-mode 1))
+
+  (use-package counsel
+    :bind(("M-x" . counsel-M-x)))
+
+  (use-package ivy-rich
+    :init
+    (ivy-rich-mode 1))
+#+end_src
+
+** svg-tag-mode
+
+#+begin_src emacs-lisp
+  (use-package svg-tag-mode
+    :hook (org-mode . (lambda () (svg-tag-mode 1)))
+    ;;:custom (svg-tag-action-at-point 'edit)
+    :config
+    (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
+    (defconst day-re "\\w\\{3\\}")
+    (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\}\\.[0-9]\\{9\\}")
+
+    (setq svg-lib-style-default (plist-put svg-lib-style-default :font-family "Jetbrains Mono"))
+
+    (setq svg-tag-tags `(
+			 ;; inactive
+			 (,(format "\\(\\[%s\\) %s\\]" date-re day-re) . ;; date, day
+			  ((lambda (tag) (svg-tag-make tag :beg 1 :crop-right t :margin 0))))
+			 (,(format "\\[%s\\( %s\\]\\)" date-re day-re) .
+			  ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0))))
+
+			 (,(format "\\(\\[%s\\) %s %s\\]" date-re day-re time-re) . ;; date, day, time
+			  ((lambda (tag) (svg-tag-make tag :beg 1 :crop-right t :margin 0))))
+			 (,(format "\\[%s\\( %s %s\\]\\)" date-re day-re time-re) .
+			  ((lambda (tag) (svg-tag-make tag :end -14 :inverse t :crop-left t :margin 0))))
+
+			 ;; active
+			 (,(format "\\(<%s\\) %s>" date-re day-re) . ;; date, day
+			  ((lambda (tag) (svg-tag-make tag :beg 1 :crop-right t :margin 0 :face 'org-date))))
+			 (,(format "<%s\\( %s>\\)" date-re day-re) .
+			  ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))
+
+			 (,(format "\\(<%s\\) %s .*>" date-re day-re) . ;; date, day, repeat/warning period
+			  ((lambda (tag) (svg-tag-make tag :beg 1 :crop-right t :margin 0 :face 'org-date))))
+			 (,(format "<%s\\( %s .*>\\)" date-re day-re) .
+			  ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))
+
+			 ("^\\*+ \\(TODO\\)" . ((lambda (tag) (svg-tag-make "TODO" :inverse t :face 'org-todo))))
+			 ("^\\*+ \\(DONE\\)" . ((lambda (tag) (svg-tag-make "DONE" :face 'org-done)))))))
+#+end_src
+
+** simple-httpd
+
+#+begin_src emacs-lisp
+  (use-package simple-httpd
+    :config
+    (defservlet org-task application/json ()
+      (insert (if (and (boundp 'org-clock-current-task) org-clock-current-task)
+		  (format "{\"clocked\": true, \"name\": \"%s\", \"time\": \"%s\"}"
+			  org-clock-current-task
+			  (org-duration-from-minutes (org-clock-get-clocked-time)))
+		"{\"clocked\": false}"))
+      (httpd-send-header t "application/json" 200 :Access-Control-Allow-Origin "*")))
+#+end_src
+
+** rainbow-delimiters
+
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+** company
+
+#+begin_src emacs-lisp
+  (use-package company
+    :config
+    (global-company-mode))
+#+end_src
+
+** language support
+
+*** nix
+
+#+begin_src emacs-lisp
+  (use-package nix-mode
+    :mode "\\.nix\\'")
+#+end_src
+
+** apps
+
+Applications in Emacs.
+
+*** emms
+
+#+begin_src emacs-lisp
+  ;; TODO: machine specific configuration
+  ;; (use-package emms
+  ;;   :config
+  ;;   (require 'emms-info-tinytag)
+  ;;   (setq emms-source-file-default-directory "~/Music/"
+  ;; 	emms-volume-change-function 'emms-volume-pulse-change)
+
+  ;;   (emms-all)
+  ;;   (require 'emms-player-mpd)
+  ;;   (setq emms-player-list '(emms-player-mpd)
+  ;; 	emms-info-functions '(emms-info-mpd)
+  ;; 	emms-player-mpd-server-name "localhost"
+  ;; 	emms-player-mpd-server-port "6600"
+  ;; 	emms-player-mpd-music-directory "~/Music/")
+
+  ;;   (emms-cache-set-from-mpd-all))
+#+end_src
