@@ -6,5 +6,6 @@
     ./git
     ./emacs
     ./kitty
+    ./awesome
   ];
 }
