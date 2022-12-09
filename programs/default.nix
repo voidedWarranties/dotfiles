@@ -5,5 +5,6 @@
     ./zsh
     ./git
     ./emacs
+    ./kitty
   ];
 }

@@ -4,6 +4,9 @@
   home = {
     inherit username homeDirectory;
     stateVersion = "22.11";
+    packages = [
+      pkgs.nixgl.auto.nixGLDefault
+    ];
   };
 
   programs.home-manager.enable = true;

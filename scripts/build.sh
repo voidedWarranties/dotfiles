@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nix build .#homeConfigurations.ksk.activationPackage
+nix build --impure .#homeConfigurations.ksk.activationPackage
