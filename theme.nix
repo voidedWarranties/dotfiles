@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   home.pointerCursor = {
@@ -9,5 +9,16 @@
     x11.enable = true;
   };
 
-  gtk.enable = true;
+  gtk = {
+    enable = true;
+    iconTheme = {
+      package = pkgs.papirus-icon-theme;
+      name = "Papirus-Dark";
+    };
+  };
+
+  qt = {
+    enable = true;
+    platformTheme = "gtk";
+  };
 }
