@@ -8,5 +8,6 @@
     ./kitty
     ./awesome
     ./albert
+    ./firefox
   ];
 }
