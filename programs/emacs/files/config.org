@@ -67,6 +67,7 @@ Both files must exist and this file must be newer than =config.el=.
   (electric-pair-mode 1)
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   (setq make-backup-files nil)
+  (setq-default indent-tabs-mode nil) ; disable turning spaces to tabs
   (server-start)
 #+end_src
 
@@ -521,6 +522,27 @@ Easier key bindings.
 #+begin_src emacs-lisp
   (use-package nix-mode
     :mode "\\.nix\\'")
+#+end_src
+
+*** lua
+
+#+begin_src emacs-lisp
+  ; from: https://stackoverflow.com/a/67176958
+  (defun lua-at-most-one-indent (old-function &rest arguments)
+    (let ((old-res (apply old-function arguments)))
+      (if (> old-res lua-indent-level) lua-indent-level old-res)))
+
+  (use-package lua-mode
+    :custom
+    (lua-indent-level 4)
+    (lua-indent-nested-block-content-align nil)
+    (lua-indent-close-paren-align nil)
+    :config
+    (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+    (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+    (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+    (advice-add #'lua-calculate-indentation-block-modifier
+                :around #'lua-at-most-one-indent))
 #+end_src
 
 ** apps
