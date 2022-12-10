@@ -5,20 +5,13 @@ pcall(require, "luarocks.loader")
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
-require("awful.autofocus")
--- Widget and layout library
 local wibox = require("wibox")
--- Theme handling library
 local beautiful = require("beautiful")
--- Notification library
 local naughty = require("naughty")
 local hotkeys_popup = require("awful.hotkeys_popup")
--- Enable hotkeys help widget for VIM and other apps
--- when client with a matching name is opened:
-require("awful.hotkeys_popup.keys")
 
-local xresources = require("beautiful.xresources")
-local dpi = xresources.apply_dpi
+require("awful.autofocus")
+require("awful.hotkeys_popup.keys")
 
 -- {{{ Runtime error handling
 do
@@ -40,7 +33,6 @@ end
 -- }}}
 
 -- {{{ Variable definitions
--- Themes define colours, icons, font and wallpapers.
 beautiful.init("~/.config/awesome/theme.lua")
 
 terminal = "nixGL kitty"
@@ -66,9 +58,6 @@ awful.layout.layouts = {
     -- awful.layout.suit.corner.se,
 }
 -- }}}
-
--- Keyboard map indicator and switcher
-mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
 clock = wibox.widget.textclock("%d.%m %H:%M:%S", 1)
@@ -182,8 +171,7 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            spacing = dpi(4),
-            mykeyboardlayout,
+            spacing = beautiful.menu_spacing,
             wibox.widget.systray(),
             clock,
             s.mylayoutbox,
@@ -430,18 +418,22 @@ clientkeys = gears.table.join(
         { description = "(un)maximize", group = "client" }
     ),
 
-    awful.key({ modkey, "Control" }, "m",
+    awful.key(
+        { modkey, "Control" }, "m",
         function(c)
             c.maximized_vertical = not c.maximized_vertical
             c:raise()
-        end ,
-        {description = "(un)maximize vertically", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "m",
+        end,
+        { description = "(un)maximize vertically", group = "client" }
+    ),
+    awful.key(
+        { modkey, "Shift" }, "m",
         function(c)
             c.maximized_horizontal = not c.maximized_horizontal
             c:raise()
-        end ,
-        {description = "(un)maximize horizontally", group = "client"})
+        end,
+        { description = "(un)maximize horizontally", group = "client" }
+    )
 )
 
 -- Bind all key numbers to tags.
