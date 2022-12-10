@@ -16,5 +16,6 @@
   imports = [
     ./programs
     ./fonts.nix
+    ./theme.nix
   ];
 }
