@@ -13,6 +13,10 @@
     timeout = 2;
   };
 
+  services.picom = {
+    enable = true;
+  };
+
   home.file = {
     ".config/awesome/rc.lua".source = ./files/rc.lua;
     ".config/awesome/theme.lua".source = ./files/theme.lua;

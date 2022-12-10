@@ -7,5 +7,6 @@
     ./emacs
     ./kitty
     ./awesome
+    ./albert
   ];
 }
