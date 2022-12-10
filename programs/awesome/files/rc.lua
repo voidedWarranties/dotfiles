@@ -67,22 +67,6 @@ awful.layout.layouts = {
 }
 -- }}}
 
--- {{{ Menu
--- Create a launcher widget and a main menu
-awesome_menu = {
-   { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
-   { "restart", awesome.restart },
-   { "quit", function() awesome.quit() end },
-}
-
-main_menu = awful.menu({
-    items = {
-        { "awesome", awesome_menu, beautiful.awesome_icon },
-        { "open terminal", terminal }
-    }
-})
--- }}}
-
 -- Keyboard map indicator and switcher
 mykeyboardlayout = awful.widget.keyboardlayout()
 
@@ -206,14 +190,6 @@ awful.screen.connect_for_each_screen(function(s)
         },
     })
 end)
--- }}}
-
--- {{{ Mouse bindings
-root.buttons(gears.table.join(
-    awful.button({ }, 3, function() main_menu:toggle() end),
-    awful.button({ }, 4, awful.tag.viewnext),
-    awful.button({ }, 5, awful.tag.viewprev)
-))
 -- }}}
 
 -- {{{ Key bindings
