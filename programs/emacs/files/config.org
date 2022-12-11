@@ -427,6 +427,17 @@ Easier key bindings.
       "num" '(org-roam-ui-mode :wk "mode")))
 #+end_src
 
+** projectile
+
+#+begin_src emacs-lisp
+  (use-package projectile
+    :init
+    (setq projectile-project-search-path '("~" "~/Documents"))
+    :config
+    (projectile-mode 1)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+#+end_src
+
 ** ivy, counsel, swiper
 
 #+begin_src emacs-lisp
