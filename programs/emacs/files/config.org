@@ -66,6 +66,7 @@ Both files must exist and this file must be newer than =config.el=.
 #+begin_src emacs-lisp
   (electric-pair-mode 1)
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  (setq ring-bell-function 'ignore)
   (setq make-backup-files nil)
   (setq-default indent-tabs-mode nil) ; disable turning spaces to tabs
   (server-start)
