@@ -14,16 +14,18 @@
   outputs = { nixpkgs, nur, home-manager, nixgl, ... }:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [
-          nur.overlay
-          nixgl.overlay
-        ];
-      };
+      getPkgs = isNixOS:
+        import nixpkgs {
+          inherit system;
+          overlays = [
+            nur.overlay
+            nixgl.overlay
+            (import ./overlay.nix isNixOS)
+          ];
+        };
     in {
       homeConfigurations.ksk = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = getPkgs false;
 
         modules = [
           ./home.nix

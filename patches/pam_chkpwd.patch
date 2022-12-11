@@ -1,0 +1,6 @@
+Replaces old patch which refers to setuid wrappers which do not exist on non-NixOS platforms.
+--- a/modules/pam_unix/Makefile.in
++++ b/modules/pam_unix/Makefile.in
+@@ -651,1 +651,1 @@
+-	-DCHKPWD_HELPER=\"$(sbindir)/unix_chkpwd\" \
++	-DCHKPWD_HELPER=\"/usr/sbin/unix_chkpwd\" \

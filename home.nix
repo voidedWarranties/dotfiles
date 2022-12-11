@@ -16,5 +16,6 @@
   imports = [
     ./programs
     ./sys
+    ./sys_scripts
   ];
 }

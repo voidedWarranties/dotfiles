@@ -260,6 +260,11 @@ globalkeys = gears.table.join(
         awesome.quit,
         { description = "quit awesome", group = "awesome" }
     ),
+    awful.key(
+        { modkey }, "BackSpace",
+        function() awful.spawn.with_shell("~/.ksk/scripts/lock.sh") end,
+        { description = "lock screen", group = "awesome" }
+    ),
 
     awful.key(
         { modkey }, "l",
