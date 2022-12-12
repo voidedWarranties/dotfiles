@@ -343,6 +343,22 @@ hotkeys_popup.widget.add_hotkeys({
                 ["d"] = "open albert",
             }
         }
+    },
+    ["input"] = {
+        {
+            modifiers = { },
+            keys = {
+                ["Shift"] = "temporarily switch input method",
+            }
+        },
+        {
+            modifiers = { "Control" },
+            keys = {
+                ["Space"] = "toggle input method",
+                ["LShift"] = "enumerate input method foward",
+                ["RShift"] = "enumerate input method backward",
+            }
+        }
     }
 })
 -- }}}
