@@ -44,6 +44,11 @@ awful.keyboard.append_global_keybindings({
 -- Launch
 awful.keyboard.append_global_keybindings({
     awful.key(
+        { modkey }, "F2",
+        function() awful.spawn(browser_cmd) end,
+        { description = "open the browser", group = "launcher" }
+    ),
+    awful.key(
         { modkey }, "Return",
         function() awful.spawn(terminal) end,
         { description = "open a terminal", group = "launcher" }
