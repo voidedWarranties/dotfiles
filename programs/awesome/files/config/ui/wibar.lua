@@ -1,19 +1,26 @@
 local awful = require("awful")
+local gears = require("gears")
 local wibox = require("wibox")
+local beautiful = require("beautiful")
+
+local xresources = require("beautiful.xresources")
+local dpi = xresources.apply_dpi
 
 local main_menu = require("config.ui.main_menu")
 
 -- Create a textclock widget
-clock = wibox.widget.textclock("%m.%d %H:%M:%S", 1)
+clock = wibox.widget({
+    widget = wibox.widget.textclock,
+    format = "%m.%d %H:%M:%S",
+    refresh = 1,
+})
 
 screen.connect_signal("request::desktop_decoration", function(s)
     -- Each screen has its own tag table.
     awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
 
-    -- Layout indicator
     s.layoutbox = awful.widget.layoutbox({ screen = s })
 
-    -- Create a taglist widget
     s.taglist = awful.widget.taglist({
         screen = s,
         filter = awful.widget.taglist.filter.all,
@@ -36,40 +43,134 @@ screen.connect_signal("request::desktop_decoration", function(s)
                     end
                 end
             ),
-            awful.button({ }, 4, function(t) awful.tag.viewprev(t.screen) end),
-            awful.button({ }, 5, function(t) awful.tag.viewnext(t.screen) end),
+        },
+        widget_template = {
+            {
+                id     = "text_role",
+                widget = wibox.widget.textbox,
+            },
+            margins = dpi(4),
+            widget  = wibox.container.margin,
         }
     })
 
-    -- Create a tasklist widget
+    local function tasklist_update(self, this_client, idx, objects)
+        self:get_children_by_id("text_role")[1]:set_visible(this_client == client.focus)
+    end
+
     s.tasklist = awful.widget.tasklist({
-        screen  = s,
-        filter  = awful.widget.tasklist.filter.currenttags,
+        screen = s,
+        filter = awful.widget.tasklist.filter.currenttags,
         buttons = {
             awful.button({ }, 1, function(c)
-                c:activate { context = "tasklist", action = "toggle_minimization" }
+                c:activate({ context = "tasklist", action = "toggle_minimization" })
             end),
             awful.button({ }, 3, function() awful.menu.client_list({ theme = { width = 250 } }) end),
-        }
+        },
+        layout = {
+            layout = wibox.layout.fixed.horizontal
+        },
+        widget_template = {
+            {
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = dpi(4),
+                    {
+                        {
+                            id = "icon_role",
+                            widget = wibox.widget.imagebox,
+                        },
+                        widget = wibox.container.margin,
+                        top = dpi(4),
+                        bottom = dpi(4),
+                    },
+                    {
+                        id = "text_role",
+                        widget = wibox.widget.textbox,
+                    },
+                },
+                widget = wibox.container.margin,
+                left = dpi(10),
+                right = dpi(10),
+            },
+            id = "background_role",
+            widget = wibox.container.background,
+
+            update_callback = tasklist_update,
+            create_callback = tasklist_update,
+        },
     })
+
+    local function rounded_rect(cr, width, height)
+        return gears.shape.rounded_rect(cr, width, height, beautiful.corner_radius)
+    end
 
     s.wibox = awful.wibar({
         position = "top",
         screen = s,
+        margins = {
+            top = beautiful.useless_gap * 2,
+        },
+        bg = "#00000000",
         widget = {
             layout = wibox.layout.align.horizontal,
-            { -- Left widgets
-                layout = wibox.layout.fixed.horizontal,
-                main_menu.launcher,
-                s.taglist,
+            expand = "none",
+            {
+                widget = wibox.container.margin,
+                left = beautiful.useless_gap * 2,
+                {
+                    widget = wibox.container.background,
+                    bg = beautiful.bg_normal,
+                    shape = rounded_rect,
+                    {
+                        widget = wibox.container.margin,
+                        left = beautiful.corner_radius,
+                        right = beautiful.corner_radius,
+                        {
+                            layout = wibox.layout.fixed.horizontal,
+                            spacing = beautiful.corner_radius,
+                            {
+                                widget = wibox.container.margin,
+                                top = beautiful.corner_radius,
+                                bottom = beautiful.corner_radius,
+                                main_menu.launcher,
+                            },
+                            s.taglist,
+                        }
+                    }
+                }
             },
-            s.tasklist, -- Middle widget
-            { -- Right widgets
-                layout = wibox.layout.fixed.horizontal,
-                wibox.widget.systray(),
-                clock,
-                s.layoutbox,
+            {
+                widget = wibox.container.background,
+                shape = rounded_rect,
+                s.tasklist,
             },
+            {
+                widget = wibox.container.background,
+                bg = beautiful.bg_normal,
+                shape = function(cr, width, height)
+                    return gears.shape.partially_rounded_rect(
+                        cr, width, height,
+                        true, false, false, true,
+                        beautiful.corner_radius
+                    )
+                end,
+                {
+                    layout = wibox.layout.fixed.horizontal,
+                    spacing = beautiful.corner_radius,
+                    {
+                        widget = wibox.container.margin,
+                        left = beautiful.corner_radius,
+                        wibox.widget.systray(),
+                    },
+                    clock,
+                    {
+                        widget = wibox.container.margin,
+                        margins = dpi(3),
+                        s.layoutbox,
+                    }
+                }
+            }
         }
     })
 end)
