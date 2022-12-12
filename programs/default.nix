@@ -9,5 +9,6 @@
     ./awesome
     ./albert
     ./firefox
+    ./flameshot
   ];
 }

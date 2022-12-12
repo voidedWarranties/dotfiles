@@ -19,6 +19,9 @@ end)
 -- {{{ Variable definitions
 beautiful.init("~/.config/awesome/theme.lua")
 terminal = "nixGL kitty"
+screenshot_cmd = "flameshot gui"
+lock_cmd = "~/.ksk/scripts/lock.sh"
+
 modkey = "Mod4"
 -- }}}
 

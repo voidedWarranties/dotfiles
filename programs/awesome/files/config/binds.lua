@@ -36,13 +36,22 @@ awful.keyboard.append_global_keybindings({
     ),
     awful.key(
         { modkey }, "BackSpace",
-        function() awful.spawn.with_shell("~/.ksk/scripts/lock.sh") end,
+        function() awful.spawn.with_shell(lock_cmd) end,
         { description = "lock screen", group = "awesome" }
     ),
+})
+
+-- Launch
+awful.keyboard.append_global_keybindings({
     awful.key(
         { modkey }, "Return",
         function() awful.spawn(terminal) end,
         { description = "open a terminal", group = "launcher" }
+    ),
+    awful.key(
+        { }, "Print",
+        function() awful.spawn(screenshot_cmd) end,
+        { description = "take a screenshot", group = "launcher" }
     ),
 })
 
