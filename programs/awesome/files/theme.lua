@@ -8,24 +8,28 @@ local themes_path = gfs.get_themes_dir()
 
 local theme = {}
 
+-- Load colors from Nix theme
+local colors = require("generated.colors")
+
 theme.font = "IBM Plex Sans 10"
 theme.mono_font = "IBM Plex Mono 10"
 
-theme.bg_normal = "#1a1a33"         -- hsv(240deg, 50%, 20%)
-theme.bg_focus = "#27274d"          -- hsv(240, 50, 30)
-theme.bg_urgent = "#e5446c"         -- hsv(345, 70, 90)
-theme.bg_minimize = "#242433"       -- hsv(240, 30, 20)
-theme.bg_systray = theme.bg_normal
+theme.bg_normal = colors.bg1
+theme.bg_focus = colors.bg2
+theme.bg_minimize = colors.bg_min
+theme.bg_urgent = colors.urgent
 
-theme.fg_normal = "#ffffff"
-theme.fg_focus = "#ffffff"
-theme.fg_urgent = "#ffffff"
-theme.fg_minimize = "#ffffff"
+theme.bg_systray = colors.bg1
+
+theme.fg_normal = colors.fg1
+theme.fg_focus = colors.fg1
+theme.fg_urgent = colors.fg1
+theme.fg_minimize = colors.fg1
 
 theme.useless_gap = dpi(2)
 theme.border_width = dpi(1)
-theme.border_color_normal = "#000000"
-theme.border_color_active = "#535d6c"
+theme.border_color_normal = colors.bg1
+theme.border_color_active = colors.bg2
 theme.border_color_marked = "#91231c"
 
 -- taglist_[bg|fg]_[focus|urgent|occupied|empty|volatile]
@@ -34,13 +38,13 @@ theme.border_color_marked = "#91231c"
 -- tooltip_[font|opacity|fg_color|bg_color|border_width|border_color]
 -- prompt_[fg|bg|fg_cursor|bg_cursor|font]
 -- hotkeys_[bg|fg|border_width|border_color|shape|opacity|modifiers_fg|label_bg|label_fg|group_margin|font|description_font]
-theme.taglist_fg_focus = theme.fg_focus
-theme.taglist_fg_urgent = theme.bg_urgent
-theme.taglist_fg_occupied = "#999999"
-theme.taglist_fg_empty = "#555555"
+theme.taglist_fg_focus = colors.fg1
+theme.taglist_fg_occupied = colors.fg2
+theme.taglist_fg_empty = colors.fg3
+theme.taglist_fg_urgent = colors.urgent
 
-theme.hotkeys_fg = "#ffffff"
-theme.hotkeys_modifiers_fg = "#dddddd"
+theme.hotkeys_fg = colors.fg1
+theme.hotkeys_modifiers_fg = colors.fg2
 
 -- notification_font
 -- notification_[bg|fg]
@@ -58,30 +62,6 @@ theme.corner_radius = dpi(8)
 -- menu_[border_color|border_width]
 theme.menu_height = dpi(15)
 theme.menu_width = dpi(150)
-
--- Define the image to load
-theme.titlebar_minimize_button_normal = themes_path.."default/titlebar/minimize_normal.png"
-theme.titlebar_minimize_button_focus = themes_path.."default/titlebar/minimize_focus.png"
-
-theme.titlebar_ontop_button_normal_inactive = themes_path.."default/titlebar/ontop_normal_inactive.png"
-theme.titlebar_ontop_button_focus_inactive = themes_path.."default/titlebar/ontop_focus_inactive.png"
-theme.titlebar_ontop_button_normal_active = themes_path.."default/titlebar/ontop_normal_active.png"
-theme.titlebar_ontop_button_focus_active = themes_path.."default/titlebar/ontop_focus_active.png"
-
-theme.titlebar_sticky_button_normal_inactive = themes_path.."default/titlebar/sticky_normal_inactive.png"
-theme.titlebar_sticky_button_focus_inactive = themes_path.."default/titlebar/sticky_focus_inactive.png"
-theme.titlebar_sticky_button_normal_active = themes_path.."default/titlebar/sticky_normal_active.png"
-theme.titlebar_sticky_button_focus_active = themes_path.."default/titlebar/sticky_focus_active.png"
-
-theme.titlebar_floating_button_normal_inactive = themes_path.."default/titlebar/floating_normal_inactive.png"
-theme.titlebar_floating_button_focus_inactive = themes_path.."default/titlebar/floating_focus_inactive.png"
-theme.titlebar_floating_button_normal_active = themes_path.."default/titlebar/floating_normal_active.png"
-theme.titlebar_floating_button_focus_active = themes_path.."default/titlebar/floating_focus_active.png"
-
-theme.titlebar_maximized_button_normal_inactive = themes_path.."default/titlebar/maximized_normal_inactive.png"
-theme.titlebar_maximized_button_focus_inactive = themes_path.."default/titlebar/maximized_focus_inactive.png"
-theme.titlebar_maximized_button_normal_active = themes_path.."default/titlebar/maximized_normal_active.png"
-theme.titlebar_maximized_button_focus_active = themes_path.."default/titlebar/maximized_focus_active.png"
 
 theme.wallpaper = "~/.config/awesome/wallpaper.jpg"
 

@@ -1,6 +1,10 @@
 { config, ... }:
 
 {
+  imports = [
+    ./generated.nix
+  ];
+
   xsession = {
     enable = true;
     windowManager.awesome = {
