@@ -38,6 +38,9 @@ theme.taglist_fg_urgent = theme.bg_urgent
 theme.taglist_fg_occupied = "#999999"
 theme.taglist_fg_empty = "#555555"
 
+theme.hotkeys_fg = "#ffffff"
+theme.hotkeys_modifiers_fg = "#dddddd"
+
 -- notification_font
 -- notification_[bg|fg]
 -- notification_[width|height|margin]
