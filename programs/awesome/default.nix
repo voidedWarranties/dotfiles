@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -11,6 +11,10 @@
       enable = true;
     };
   };
+
+  home.packages = [
+    pkgs.networkmanagerapplet
+  ];
 
   services.unclutter = {
     enable = true;
