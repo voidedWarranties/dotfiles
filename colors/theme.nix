@@ -2,6 +2,7 @@ rec {
   mainHue = 240;
   highlightHue = 345;
 
+  bg0 = { h = mainHue; s = 0.5; v = 0.15; };
   bg1 = { h = mainHue; s = 0.5; v = 0.2; };
   bg2 = { h = mainHue; s = 0.5; v = 0.3; };
   bgMin = { h = mainHue; s = 0.3; v = 0.2; };

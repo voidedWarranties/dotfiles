@@ -1,6 +1,8 @@
 { ... }:
 
-{
+let
+  colors = import ../../colors;
+in with colors; {
   programs.kitty = {
     enable = true;
     font = {
@@ -9,7 +11,8 @@
     };
     settings = {
       confirm_os_window_close = 0;
-      background_opacity = "0.9";
+      background = utils.hsvToHexP theme.bg0;
+      background_opacity = "0.95";
     };
   };
 }
