@@ -9,6 +9,7 @@ local themes_path = gfs.get_themes_dir()
 local theme = {}
 
 theme.font = "IBM Plex Sans 10"
+theme.mono_font = "IBM Plex Mono 10"
 
 theme.bg_normal = "#1a1a33"         -- hsv(240deg, 50%, 20%)
 theme.bg_focus = "#27274d"          -- hsv(240, 50, 30)
@@ -46,6 +47,8 @@ theme.hotkeys_modifiers_fg = "#dddddd"
 -- notification_[width|height|margin]
 -- notification_[border_color|border_width|shape|opacity]
 
+theme.icon_margin = dpi(4)
+
 -- Wibar
 theme.wibar_height = dpi(30)
 theme.corner_radius = dpi(8)
@@ -54,7 +57,7 @@ theme.corner_radius = dpi(8)
 -- menu_[bg|fg]_[normal|focus]
 -- menu_[border_color|border_width]
 theme.menu_height = dpi(15)
-theme.menu_width = dpi(100)
+theme.menu_width = dpi(150)
 
 -- Define the image to load
 theme.titlebar_minimize_button_normal = themes_path.."default/titlebar/minimize_normal.png"

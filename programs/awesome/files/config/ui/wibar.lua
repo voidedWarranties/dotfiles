@@ -15,6 +15,11 @@ clock = wibox.widget({
     refresh = 1,
 })
 
+local launcher = awful.widget.launcher({
+    image = beautiful.awesome_icon,
+    menu = main_menu
+})
+
 screen.connect_signal("request::desktop_decoration", function(s)
     -- Each screen has its own tag table.
     awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
@@ -81,8 +86,8 @@ screen.connect_signal("request::desktop_decoration", function(s)
                             widget = wibox.widget.imagebox,
                         },
                         widget = wibox.container.margin,
-                        top = dpi(4),
-                        bottom = dpi(4),
+                        top = beautiful.icon_margin,
+                        bottom = beautiful.icon_margin,
                     },
                     {
                         id = "text_role",
@@ -102,7 +107,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
     })
 
     local function rounded_rect(cr, width, height)
-        return gears.shape.rounded_rect(cr, width, height, beautiful.corner_radius)
+        gears.shape.rounded_rect(cr, width, height, beautiful.corner_radius)
     end
 
     s.wibox = awful.wibar({
@@ -133,7 +138,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
                                 widget = wibox.container.margin,
                                 top = beautiful.corner_radius,
                                 bottom = beautiful.corner_radius,
-                                main_menu.launcher,
+                                launcher,
                             },
                             s.taglist,
                         }
@@ -149,7 +154,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
                 widget = wibox.container.background,
                 bg = beautiful.bg_normal,
                 shape = function(cr, width, height)
-                    return gears.shape.partially_rounded_rect(
+                    gears.shape.partially_rounded_rect(
                         cr, width, height,
                         true, false, false, true,
                         beautiful.corner_radius

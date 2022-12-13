@@ -7,16 +7,9 @@ local awesome_menu = {
    { "quit", function() awesome.quit() end },
 }
 
-local main_menu = awful.menu({
+return awful.menu({
     items = {
         { "awesome", awesome_menu, beautiful.awesome_icon },
         { "open terminal", terminal }
     }
 })
-
-local launcher = awful.widget.launcher({
-    image = beautiful.awesome_icon,
-    menu = main_menu
-})
-
-return { menu = main_menu, launcher = launcher }

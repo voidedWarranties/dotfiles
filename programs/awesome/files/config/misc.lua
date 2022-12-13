@@ -1,6 +1,7 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
+local gears = require("gears")
 
 -- {{{ Tag layout
 tag.connect_signal("request::default_layouts", function()
@@ -27,5 +28,13 @@ screen.connect_signal("request::wallpaper", function(s)
             widget = wibox.widget.imagebox,
         }
     })
+end)
+-- }}}
+
+-- {{{ Rounded corners
+client.connect_signal("request::manage", function(c)
+    c.shape = function(cr, w, h)
+        gears.shape.rounded_rect(cr, w, h, beautiful.corner_radius)
+    end
 end)
 -- }}}

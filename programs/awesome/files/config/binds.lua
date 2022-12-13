@@ -8,7 +8,7 @@ require("awful.hotkeys_popup.keys")
 
 -- {{{ Mouse bindings
 awful.mouse.append_global_mousebindings({
-    awful.button({ }, 3, function() main_menu.menu:toggle() end),
+    awful.button({ }, 3, function() main_menu:toggle() end),
 })
 -- }}}
 
@@ -22,7 +22,7 @@ awful.keyboard.append_global_keybindings({
     ),
     awful.key(
         { modkey }, "w",
-        function() main_menu.menu:toggle() end,
+        function() main_menu:toggle() end,
         { description = "show main menu", group = "awesome" }
     ),
     awful.key(
