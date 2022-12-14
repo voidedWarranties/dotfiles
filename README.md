@@ -10,7 +10,6 @@ some manual setup is required:
 
 and, less obviously:
 
-- adding `zsh` to `/etc/shells` (`./scripts/shell_setup.sh`)
 - adding `i3lock` to `/etc/pam.d` (`./scripts/pam_setup.sh`)
 
 there are no guarantees that this setup works on any non-Fedora distro.
@@ -22,9 +21,7 @@ especially when not operating in NixOS.
 
 ### login shell
 
-the login shell cannot be changed to a Nix-installed shell unless it is added to `/etc/shells`.
-
-see: `scripts/shell_setup.sh`
+setting the login shell to a Nix-installed shell via `~/.nix-profile` may lead to tty login not working.
 
 ### the window manager
 
