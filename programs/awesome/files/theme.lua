@@ -17,7 +17,7 @@ theme.mono_font = "IBM Plex Mono 10"
 theme.bg_normal = colors.bg1
 theme.bg_focus = colors.bg2
 theme.bg_minimize = colors.bg_min
-theme.bg_urgent = colors.urgent
+theme.bg_urgent = colors.hl1
 
 theme.bg_systray = colors.bg1
 
@@ -41,7 +41,7 @@ theme.border_color_marked = "#91231c"
 theme.taglist_fg_focus = colors.fg1
 theme.taglist_fg_occupied = colors.fg2
 theme.taglist_fg_empty = colors.fg3
-theme.taglist_fg_urgent = colors.urgent
+theme.taglist_fg_urgent = colors.hl1
 
 theme.hotkeys_fg = colors.fg1
 theme.hotkeys_modifiers_fg = colors.fg2
