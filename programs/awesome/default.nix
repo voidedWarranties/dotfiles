@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
-{
+let
+  linkDir = dir: {
+    ".config/awesome/${dir}".source = config.lib.file.mkOutOfStoreSymlink ./files + "/${dir}";
+  };
+in {
   imports = [
     ./generated.nix
   ];
@@ -28,7 +32,9 @@
   home.file = {
     ".config/awesome/rc.lua".source = ./files/rc.lua;
     ".config/awesome/theme.lua".source = ./files/theme.lua;
-    ".config/awesome/config".source = config.lib.file.mkOutOfStoreSymlink ./files/config;
     ".config/awesome/wallpaper.jpg".source = ./files/wallpaper.jpg;
-  };
+  }
+  // linkDir "config"
+  // linkDir "core"
+  // linkDir "utils";
 }

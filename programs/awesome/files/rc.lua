@@ -30,6 +30,8 @@ modkey = "Mod4"
 require("awful.autofocus")          -- Deprecated
 
 -- Config
+require("core")
+
 require("config.autostart")
 require("config.binds")
 require("config.rules")

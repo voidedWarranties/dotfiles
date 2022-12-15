@@ -259,6 +259,26 @@ awful.keyboard.append_global_keybindings({
 })
 -- }}}
 
+-- {{{ Multimedia
+awful.keyboard.append_global_keybindings({
+    awful.key(
+        { }, "XF86AudioMute",
+        function() awesome.emit_signal("signal::volume_change", { mute = "toggle" }) end,
+        { description = "mute volume", group = "multimedia" }
+    ),
+    awful.key(
+        { }, "XF86AudioLowerVolume",
+        function() awesome.emit_signal("signal::volume_change", { dec = 2 }) end,
+        { description = "lower volume", group = "multimedia" }
+    ),
+    awful.key(
+        { }, "XF86AudioRaiseVolume",
+        function() awesome.emit_signal("signal::volume_change", { inc = 2 }) end,
+        { description = "raise volume", group = "multimedia" }
+    ),
+})
+-- }}}
+
 -- {{{ Client bindings
 client.connect_signal("request::default_mousebindings", function()
     awful.mouse.append_client_mousebindings({

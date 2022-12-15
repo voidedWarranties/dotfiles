@@ -1,4 +1,5 @@
 local theme_assets = require("beautiful.theme_assets")
+local gears = require("gears")
 local rnotification = require("ruled.notification")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
@@ -31,6 +32,15 @@ theme.border_width = dpi(1)
 theme.border_color_normal = colors.bg1
 theme.border_color_active = colors.bg2
 theme.border_color_marked = "#91231c"
+
+-- Slider
+theme.slider_bar_shape = gears.shape.rounded_rect
+theme.slider_bar_height = dpi(5)
+theme.slider_bar_color = colors.bg2
+
+theme.slider_handle_shape = gears.shape.circle
+theme.slider_handle_width = dpi(10)
+theme.slider_handle_color = colors.hl2
 
 -- taglist_[bg|fg]_[focus|urgent|occupied|empty|volatile]
 -- tasklist_[bg|fg]_[focus|urgent]

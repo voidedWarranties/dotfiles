@@ -57,3 +57,7 @@ otherwise, rime doesn't do anything.
 Nix does not support `plum`.
 
 see: `sys/input/default.nix`
+
+## some references/inspiration
+
+* [Stardust-kyun's dotfiles](https://github.com/Stardust-kyun/dotfiles)

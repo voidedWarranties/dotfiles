@@ -1,0 +1,7 @@
+{ ... }:
+
+{
+  imports = [
+    ./feather.nix
+  ];
+}

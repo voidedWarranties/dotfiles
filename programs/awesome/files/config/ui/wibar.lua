@@ -2,9 +2,7 @@ local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-
-local xresources = require("beautiful.xresources")
-local dpi = xresources.apply_dpi
+local dpi = beautiful.xresources.apply_dpi
 
 local main_menu = require("config.ui.main_menu")
 
