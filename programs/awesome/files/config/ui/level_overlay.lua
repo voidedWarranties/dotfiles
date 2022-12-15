@@ -84,7 +84,7 @@ local function show()
     local top_margin
     local left_margin = beautiful.useless_gap * 2
 
-    if client.focus.fullscreen then
+    if client.focus and client.focus.fullscreen then
         top_margin = left_margin
     else
         top_margin = left_margin * 2 + beautiful.wibar_height
