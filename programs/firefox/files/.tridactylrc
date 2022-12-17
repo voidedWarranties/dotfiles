@@ -1,4 +1,5 @@
 " Settings
+set smoothscroll true
 set allowautofocus false
 
 seturl .*discord\.com.* preventautofocusjackhammer true
