@@ -1,10 +1,5 @@
 #+title: Emacs Configuration
 
-* usage
-
-Run =touch config.el= and =touch config.org= for this file to be tangled automatically.
-Both files must exist and this file must be newer than =config.el=.
-
 * basic emacs options
 
 ** startup
@@ -15,12 +10,6 @@ Both files must exist and this file must be newer than =config.el=.
 	initial-scratch-message ""
 	server-client-instructions nil
 	warning-minimum-level :emergency)
-#+end_src
-
-** custom
-
-#+begin_src emacs-lisp
-  (setq custom-file "~/.emacs.d/custom.el") ; instead of init.el
 #+end_src
 
 ** window behavior/layout
@@ -54,21 +43,22 @@ Both files must exist and this file must be newer than =config.el=.
   (set-face-attribute 'default nil :inherit 'fixed-pitch)
 #+end_src
 
-** trailing whitespace
-
-#+begin_src emacs-lisp
-  (add-hook 'before-save-hook
-	    'delete-trailing-whitespace)
-#+end_src
-
 ** misc
 
 #+begin_src emacs-lisp
+  ; autoremove trailing whitespace
+  (add-hook 'before-save-hook
+            'delete-trailing-whitespace)
+
+  ; disable turning spaces to tabs
+  (setq-default indent-tabs-mode nil)
+
   (electric-pair-mode 1)
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  (setq custom-file "~/.emacs.d/custom.el") ; instead of init.el
   (setq ring-bell-function 'ignore)
   (setq make-backup-files nil)
-  (setq-default indent-tabs-mode nil) ; disable turning spaces to tabs
+
   (server-start)
 #+end_src
 
@@ -96,6 +86,27 @@ Adding archives and refreshing contents.
 
   (require 'use-package)
   (setq use-package-always-ensure t)
+#+end_src
+
+** theming
+
+*** doom-themes
+
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :config
+    (setq doom-themes-enable-bold t
+	  doom-themes-enable-italic t)
+    (load-theme 'doom-molokai t)
+    (doom-themes-org-config))
+#+end_src
+
+*** nano-modeline
+
+#+begin_src emacs-lisp
+  (use-package nano-modeline
+    :init
+    (nano-modeline-mode 1))
 #+end_src
 
 ** org
@@ -280,17 +291,6 @@ Automatic toggling of LaTeX fragments in org-mode
   (use-package org-transclusion)
 #+end_src
 
-** doom-themes
-
-#+begin_src emacs-lisp
-  (use-package doom-themes
-    :config
-    (setq doom-themes-enable-bold t
-	  doom-themes-enable-italic t)
-    (load-theme 'doom-molokai t)
-    (doom-themes-org-config))
-#+end_src
-
 ** evil mode
 
 #+begin_src emacs-lisp
@@ -313,14 +313,6 @@ Provides keybindings for some special modes.
     :custom (evil-collection-setup-minibuffer t)
     :config
     (evil-collection-init))
-#+end_src
-
-** nano-modeline
-
-#+begin_src emacs-lisp
-  (use-package nano-modeline
-    :init
-    (nano-modeline-mode 1))
 #+end_src
 
 ** which-key
@@ -512,22 +504,24 @@ Easier key bindings.
       (httpd-send-header t "application/json" 200 :Access-Control-Allow-Origin "*")))
 #+end_src
 
-** rainbow-delimiters
+** language support
+
+*** rainbow-delimiters
 
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
-** company
+*** company
+
+Completion framework.
 
 #+begin_src emacs-lisp
   (use-package company
     :config
     (global-company-mode))
 #+end_src
-
-** language support
 
 *** nix
 
