@@ -31,13 +31,6 @@
   (tooltip-mode -1)
 #+end_src
 
-** line numbers
-
-#+begin_src emacs-lisp
-  (setq display-line-numbers-type 'relative)
-  (global-display-line-numbers-mode)
-#+end_src
-
 ** fonts
 
 #+begin_src emacs-lisp
@@ -50,6 +43,10 @@
 ** misc
 
 #+begin_src emacs-lisp
+  ; line numbers
+  (setq display-line-numbers-type 'relative)
+  (global-display-line-numbers-mode)
+
   ; autoremove trailing whitespace
   (add-hook 'before-save-hook
             'delete-trailing-whitespace)
@@ -62,8 +59,6 @@
   (setq custom-file "~/.emacs.d/custom.el") ; instead of init.el
   (setq ring-bell-function 'ignore)
   (setq make-backup-files nil)
-
-  (server-start)
 #+end_src
 
 * packages
@@ -333,17 +328,6 @@ Provides keybindings for some special modes.
     (evil-collection-init))
 #+end_src
 
-** which-key
-
-Gives hints for keybinds.
-
-#+begin_src emacs-lisp
-  (use-package which-key
-    :init
-    (setq which-key-idle-delay 0.3)
-    (which-key-mode))
-#+end_src
-
 ** helpful
 
 Provides better help pages.
@@ -358,83 +342,6 @@ Provides better help pages.
     ([remap describe-command] . helpful-command)
     ([remap describe-variable] . counsel-describe-variable)
     ([remap describe-key] . helpful-key))
-#+end_src
-
-** general
-
-Easier key bindings.
-
-#+begin_src emacs-lisp
-  (use-package general
-    :config
-    (general-create-definer etc/leader-def
-      :keymaps 'override
-      :prefix "SPC"
-      :global-prefix "C-SPC")
-
-    ;; TODO: machine specific configuration
-    ;; (etc/leader-def
-    ;;   :keymaps 'normal
-    ;;   "a" '(:ignore t :which-key "applications")
-    ;;   "as" 'emms)
-
-    (etc/leader-def
-      :keymaps 'normal
-      "m" '(:ignore t :wk "mode")
-      "ms" 'svg-tag-mode)
-
-    (etc/leader-def
-      :keymaps 'normal
-      "d" '(:ignore t :wk "describe")
-      "dk" '(helpful-key :wk "key")
-      "dc" '(helpful-command :wk "command")
-      "df" '(counsel-describe-function :wk "function")
-      "dv" '(counsel-describe-variable :wk "variable"))
-
-    (etc/leader-def
-      :keymaps 'normal
-      "b" '(:ignore t :wk "buffer")
-      "bs" '(counsel-switch-buffer :wk "switch")
-      "bk" '(kill-buffer :wk "kill"))
-
-    (etc/leader-def
-      :keymaps '(normal insert)
-      "o" '(:ignore t :wk "org")
-      "oa" '(org-agenda :wk "agenda")
-
-      "od" '(org-deadline :wk "deadline")
-      "os" '(org-schedule :wk "schedule")
-
-      "oE" '(org-export-dispatch :wk "export")
-      "oS" '(org-save-all-org-buffers :wk "save")
-
-      "oc" '(:ignore t :wk "clock")
-      "oci" '(org-clock-in :wk "in")
-      "oco" '(org-clock-out :wk "out")
-      "occ" '(org-clock-cancel :wk "cancel")
-
-      "oi" '(:ignore t :wk "timestamp")
-      "oia" '(org-time-stamp :wk "active")
-      "oii" '(org-time-stamp-inactive :wk "inactive")
-
-      "oo" '(org-open-at-point :wk "open")
-      "ot" '(org-todo :wk "todo")
-      "owc" '(org-word-count :wk "word count"))
-
-    (etc/leader-def
-      :keymaps '(normal insert)
-      "n" '(:ignore t :wk "org-roam")
-
-      "nf" '(org-roam-node-find :wk "node find")
-      "ni" '(org-roam-node-insert :wk "node insert")
-
-      "nj" '(org-roam-dailies-capture-today :wk "journal")
-      "nr" '(etc/org-roam-refresh-agenda-list :wk "refresh agenda")
-      "nl" '(org-roam-buffer-toggle :wk "toggle buffer")
-
-      "nu" '(:ignore t :wk "ui")
-      "nuo" '(org-roam-ui-open :wk "open")
-      "num" '(org-roam-ui-mode :wk "mode")))
 #+end_src
 
 ** projectile
@@ -568,6 +475,96 @@ Completion framework.
     (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
     (advice-add #'lua-calculate-indentation-block-modifier
                 :around #'lua-at-most-one-indent))
+#+end_src
+
+** keybindings
+
+*** which-key
+
+Gives hints for keybinds.
+
+#+begin_src emacs-lisp
+  (use-package which-key
+    :init
+    (setq which-key-idle-delay 0.3)
+    (which-key-mode))
+#+end_src
+
+*** general
+
+Easier key bindings.
+
+#+begin_src emacs-lisp
+  (use-package general
+    :config
+    (general-create-definer etc/leader-def
+      :keymaps 'override
+      :prefix "SPC"
+      :global-prefix "C-SPC")
+
+    ;; TODO: machine specific configuration
+    ;; (etc/leader-def
+    ;;   :keymaps 'normal
+    ;;   "a" '(:ignore t :which-key "applications")
+    ;;   "as" 'emms)
+
+    (etc/leader-def
+      :keymaps 'normal
+      "m" '(:ignore t :wk "mode")
+      "ms" 'svg-tag-mode)
+
+    (etc/leader-def
+      :keymaps 'normal
+      "d" '(:ignore t :wk "describe")
+      "dk" '(helpful-key :wk "key")
+      "dc" '(helpful-command :wk "command")
+      "df" '(counsel-describe-function :wk "function")
+      "dv" '(counsel-describe-variable :wk "variable"))
+
+    (etc/leader-def
+      :keymaps 'normal
+      "b" '(:ignore t :wk "buffer")
+      "bs" '(counsel-switch-buffer :wk "switch")
+      "bk" '(kill-buffer :wk "kill"))
+
+    (etc/leader-def
+      :keymaps '(normal insert)
+      "o" '(:ignore t :wk "org")
+      "oa" '(org-agenda :wk "agenda")
+
+      "od" '(org-deadline :wk "deadline")
+      "os" '(org-schedule :wk "schedule")
+
+      "oE" '(org-export-dispatch :wk "export")
+      "oS" '(org-save-all-org-buffers :wk "save")
+
+      "oc" '(:ignore t :wk "clock")
+      "oci" '(org-clock-in :wk "in")
+      "oco" '(org-clock-out :wk "out")
+      "occ" '(org-clock-cancel :wk "cancel")
+
+      "oi" '(:ignore t :wk "timestamp")
+      "oia" '(org-time-stamp :wk "active")
+      "oii" '(org-time-stamp-inactive :wk "inactive")
+
+      "oo" '(org-open-at-point :wk "open")
+      "ot" '(org-todo :wk "todo")
+      "owc" '(org-word-count :wk "word count"))
+
+    (etc/leader-def
+      :keymaps '(normal insert)
+      "n" '(:ignore t :wk "org-roam")
+
+      "nf" '(org-roam-node-find :wk "node find")
+      "ni" '(org-roam-node-insert :wk "node insert")
+
+      "nj" '(org-roam-dailies-capture-today :wk "journal")
+      "nr" '(etc/org-roam-refresh-agenda-list :wk "refresh agenda")
+      "nl" '(org-roam-buffer-toggle :wk "toggle buffer")
+
+      "nu" '(:ignore t :wk "ui")
+      "nuo" '(org-roam-ui-open :wk "open")
+      "num" '(org-roam-ui-mode :wk "mode")))
 #+end_src
 
 ** apps
