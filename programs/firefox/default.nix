@@ -13,8 +13,16 @@
       id = 0;
       name = "default";
 
-      search.default = "DuckDuckGo";
-      search.force = true;
+      search = {
+        default = "Startpage";
+        force = true;
+
+        engines = {
+          "Startpage" = {
+            urls = [{ template = "https://www.startpage.com/sp/search?query={searchTerms}"; }];
+          };
+        };
+      };
 
       settings = import ./settings.nix;
     };
