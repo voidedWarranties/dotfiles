@@ -21,8 +21,8 @@
                               (tool-bar-lines . 0)
                               (vertical-scroll-bars . nil)
                               (internal-border-width . 24)
-                              (left-fringe . 0)
-                              (right-fringe . 0)
+                              (left-fringe . 12) ; fringes for showing breakpoints, etc.
+                              (right-fringe . 12)
                               ; need to set font for server
                               (font . "IBM Plex Mono")))
 
@@ -449,11 +449,44 @@ Completion framework.
     (global-company-mode))
 #+end_src
 
+*** lsp-mode
+
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :init
+    (setq lsp-keymap-prefix "C-c l")
+    :hook (
+           (c++-mode . lsp)
+           (rust-mode . lsp)
+
+           (lsp-mode . lsp-enable-which-key-integration))
+    :commands lsp)
+
+  (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+#+end_src
+
+**** dap
+
+#+begin_src emacs-lisp
+  (use-package dap-mode
+    :config
+    (require 'dap-codelldb) ; codelldb seems to work, lldb does not
+    (dap-codelldb-setup)
+    (dap-auto-configure-mode))
+#+end_src
+
 *** nix
 
 #+begin_src emacs-lisp
   (use-package nix-mode
     :mode "\\.nix\\'")
+#+end_src
+
+*** rust
+
+#+begin_src emacs-lisp
+  (use-package rust-mode
+    :mode "\\.rs\\'")
 #+end_src
 
 *** lua

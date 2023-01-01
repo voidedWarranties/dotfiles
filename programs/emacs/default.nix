@@ -8,9 +8,13 @@ let
       wrapfig amsmath ulem hyperref capt-of;
   });
 in {
-  home.packages = [
-    pkgs.emacs
+  home.packages = with pkgs; [
+    emacs
     tex
+
+    # LSP
+    clang-tools # clangd
+    rust-analyzer # rust
   ];
 
   home.file = {

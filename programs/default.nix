@@ -10,5 +10,6 @@
     ./albert
     ./firefox
     ./flameshot
+    ./misc
   ];
 }
