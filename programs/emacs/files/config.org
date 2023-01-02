@@ -40,6 +40,12 @@
                       :font 'unspecified)
 #+end_src
 
+** default key overrides
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+#+end_src
+
 ** misc
 
 #+begin_src emacs-lisp
@@ -533,9 +539,10 @@ Easier key bindings.
   (use-package general
     :config
     (general-create-definer etc/leader-def
+      :states '(normal insert)
       :keymaps 'override
       :prefix "SPC"
-      :global-prefix "C-SPC")
+      :non-normal-prefix "C-SPC")
 
     ;; TODO: machine specific configuration
     ;; (etc/leader-def
@@ -544,50 +551,23 @@ Easier key bindings.
     ;;   "as" 'emms)
 
     (etc/leader-def
-      :keymaps 'normal
       "m" '(:ignore t :wk "mode")
       "ms" 'svg-tag-mode)
 
     (etc/leader-def
-      :keymaps 'normal
-      "d" '(:ignore t :wk "describe")
-      "dk" '(helpful-key :wk "key")
-      "dc" '(helpful-command :wk "command")
-      "df" '(counsel-describe-function :wk "function")
-      "dv" '(counsel-describe-variable :wk "variable"))
-
-    (etc/leader-def
-      :keymaps 'normal
-      "b" '(:ignore t :wk "buffer")
-      "bs" '(counsel-switch-buffer :wk "switch")
-      "bk" '(kill-buffer :wk "kill"))
-
-    (etc/leader-def
-      :keymaps '(normal insert)
       "o" '(:ignore t :wk "org")
       "oa" '(org-agenda :wk "agenda")
-
-      "od" '(org-deadline :wk "deadline")
-      "os" '(org-schedule :wk "schedule")
-
-      "oE" '(org-export-dispatch :wk "export")
       "oS" '(org-save-all-org-buffers :wk "save")
 
+      ;; retained because C-c C-x is rather uncomfortable
       "oc" '(:ignore t :wk "clock")
       "oci" '(org-clock-in :wk "in")
       "oco" '(org-clock-out :wk "out")
       "occ" '(org-clock-cancel :wk "cancel")
 
-      "oi" '(:ignore t :wk "timestamp")
-      "oia" '(org-time-stamp :wk "active")
-      "oii" '(org-time-stamp-inactive :wk "inactive")
-
-      "oo" '(org-open-at-point :wk "open")
-      "ot" '(org-todo :wk "todo")
       "owc" '(org-word-count :wk "word count"))
 
     (etc/leader-def
-      :keymaps '(normal insert)
       "n" '(:ignore t :wk "org-roam")
 
       "nf" '(org-roam-node-find :wk "node find")
