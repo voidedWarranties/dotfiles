@@ -362,6 +362,8 @@ Provides better help pages.
     :bind (("C-s" . swiper)))
 
   (use-package ivy
+    :custom
+    (ivy-initial-inputs-alist nil)
     :bind (:map ivy-minibuffer-map ("S-SPC" . nil))
     :config
     (setq ivy--regex-function 'ivy--regex-fuzzy)
