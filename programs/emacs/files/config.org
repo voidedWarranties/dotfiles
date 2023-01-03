@@ -544,11 +544,9 @@ Easier key bindings.
       :prefix "SPC"
       :non-normal-prefix "C-SPC")
 
-    ;; TODO: machine specific configuration
-    ;; (etc/leader-def
-    ;;   :keymaps 'normal
-    ;;   "a" '(:ignore t :which-key "applications")
-    ;;   "as" 'emms)
+    (etc/leader-def
+      "a" '(:ignore t :which-key "applications")
+      "as" 'emms)
 
     (etc/leader-def
       "m" '(:ignore t :wk "mode")
@@ -589,20 +587,18 @@ Applications in Emacs.
 *** emms
 
 #+begin_src emacs-lisp
-  ;; TODO: machine specific configuration
-  ;; (use-package emms
-  ;;   :config
-  ;;   (require 'emms-info-tinytag)
-  ;;   (setq emms-source-file-default-directory "~/Music/"
-  ;; 	emms-volume-change-function 'emms-volume-pulse-change)
+  (use-package emms
+    :config
+    (setq emms-source-file-default-directory "~/Music/"
+          emms-volume-change-function 'emms-volume-pulse-change)
 
-  ;;   (emms-all)
-  ;;   (require 'emms-player-mpd)
-  ;;   (setq emms-player-list '(emms-player-mpd)
-  ;; 	emms-info-functions '(emms-info-mpd)
-  ;; 	emms-player-mpd-server-name "localhost"
-  ;; 	emms-player-mpd-server-port "6600"
-  ;; 	emms-player-mpd-music-directory "~/Music/")
+    (emms-all)
+    (require 'emms-player-mpd)
+    (setq emms-player-list '(emms-player-mpd)
+          emms-info-functions '(emms-info-mpd)
+          emms-player-mpd-server-name "localhost"
+          emms-player-mpd-server-port "6600"
+          emms-player-mpd-music-directory "~/Music/")
 
-  ;;   (emms-cache-set-from-mpd-all))
+    (emms-cache-set-from-mpd-all))
 #+end_src

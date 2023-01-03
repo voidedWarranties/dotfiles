@@ -4,6 +4,7 @@
   imports = [
     ./zsh
     ./git
+    ./mpd
     ./emacs
     ./kitty
     ./awesome
