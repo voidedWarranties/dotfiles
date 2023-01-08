@@ -9,7 +9,7 @@ in {
     pam = pam_fixed;
   };
 
-  awesome = super.awesome.overrideAttrs (finalAttrss: previousAttrs: {
+  awesome = super.awesome.overrideAttrs (finalAttrs: previousAttrs: {
     version = "master-g1239cdf";
     src = super.fetchFromGitHub {
       owner = "awesomewm";
